@@ -1,0 +1,26 @@
+version: '3'
+services:
+  pyspark-app:
+    build:
+      context: .  # Path to the directory containing your Dockerfile
+      dockerfile: Dockerfile
+    command: ["bash", "-c", "while true; do sleep 86400; done"] # keep it running for dev purposes
+    volumes:
+      - .:/app  # Mount your application code into the container
+    depends_on:
+      - postgres
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=mydb
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    ports:
+      - "5432:5432"  # Expose PostgreSQL port

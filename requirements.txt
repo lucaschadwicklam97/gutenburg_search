@@ -1,0 +1,4 @@
+# pyspark==3.2.0
+BeautifulSoup4==4.10.0
+pytest==6.2.5
+pyspark==3.4.0
