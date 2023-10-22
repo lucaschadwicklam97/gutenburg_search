@@ -11,6 +11,9 @@ import re
 
 
 class GutenburgAPIIngestion(BaseIngestion):
+    """
+    Concrete implementation of BaseIngestion to ingest data from Gutenburg API
+    """
     url = 'https://www.gutenberg.org/robot/harvest?filetypes[]=txt'
     records_to_ingest = 30
     
@@ -19,6 +22,9 @@ class GutenburgAPIIngestion(BaseIngestion):
         self.load_path = load_path # to replace with S3 or hdfs path
 
     def extract(self):
+        """
+        extracts data from Gutenburg API and returns a data frame with schema (book_id, book_url, content)
+        """
 
         # create data frame with schema and empty content column
         df = self.spark.createDataFrame(
@@ -34,6 +40,10 @@ class GutenburgAPIIngestion(BaseIngestion):
         return df
     
     def transform(self, df):
+        """
+        transforms data frame by splitting words out, exploding words into its own column, and then doing a groupby and count
+        to return a data frame with schema (book_id, word, count)
+        """
         
         print("Here is  number of partitions:", df.rdd.getNumPartitions())
 
@@ -53,6 +63,9 @@ class GutenburgAPIIngestion(BaseIngestion):
 
     
     def load(self, df):
+        """
+        loads data frame to self.load_path. For now its just a local path, but in the future it will be S3 or hdfs
+        """
 
         df.write.mode('overwrite').parquet(self.load_path)
 
@@ -136,6 +149,10 @@ class GutenburgAPIIngestion(BaseIngestion):
     def _split(text: str) -> list:
         """
         method to split text into words. 
+
+        Parameters
+        ----------
+        text : str  : content to split into words
         """
         
         return re.findall(r'\b\w+\b', text.lower())

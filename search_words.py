@@ -3,6 +3,9 @@ import argparse
 from ingest import ingest
 
 def query(args):
+    """
+    Query the data to find top books where a given word appears the most
+    """
 
     spark = SparkSession.builder \
             .appName(args.app_name) \

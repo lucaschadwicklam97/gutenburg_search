@@ -5,6 +5,9 @@ import argparse
 from ingest import ingest
 
 def query(args):
+    """
+    Query the data to find top words appeared in a given book
+    """
 
     spark = SparkSession.builder \
             .appName(args.app_name) \
@@ -16,7 +19,7 @@ def query(args):
 
 
     distinct_books = spark.sql(f"SELECT distinct book_id from BookWordCount").collect()
-    
+
     if Row(book_id=args.book_id) in distinct_books:
         spark.sql(f"SELECT word, count FROM BookWordCount WHERE book_id = {args.book_id} ORDER BY count DESC LIMIT {args.limit}").show()
     else:
