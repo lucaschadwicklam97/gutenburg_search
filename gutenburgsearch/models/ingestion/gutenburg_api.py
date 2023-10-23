@@ -2,7 +2,6 @@ from bs4 import BeautifulSoup
 import zipfile
 from io import BytesIO
 import requests
-from typing import Tuple
 from gutenburgsearch.models.ingestion.base import BaseIngestion
 from pyspark.sql.types import StructType, StructField, StringType, ArrayType
 from pyspark.sql.functions import udf, explode, col
@@ -20,6 +19,10 @@ class GutenburgAPIIngestion(BaseIngestion):
     def __init__(self, spark_session, load_path):
         self.spark = spark_session
         self.load_path = load_path # to replace with S3 or hdfs path
+
+        import os
+        if not os.path.exists(self.load_path):
+            os.makedirs(self.load_path)
 
     def extract(self):
         """
